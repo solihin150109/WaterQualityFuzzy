@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="fas fa-tint"></i> Water Quality Measurements
+            <small class="text-muted">for {{ location.name }}</small>
+        </h2>
+        <div>
+            <a href="{% url 'location_detail' location.id %}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left"></i> Back to Location
+            </a>
+            <a href="{% url 'add_measurement' location.id %}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Add Measurement
+            </a>
+        </div>
+    </div>
+
+    {% if measurements %}
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Date</th>
+                            <th>Basic Parameters</th>
+                            <th>WQI Results</th>
+                            <th>STORE Results</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for measurement in measurements %}
+                        <tr>
+                            <td>{{ measurement.date|date:"Y-m-d H:i" }}</td>
+                            <td>
+                                <div><strong>pH:</strong> {{ measurement.ph }}</div>
+                                <div><strong>DO:</strong> {{ measurement.do }} mg/L</div>
+                                <div><strong>BOD:</strong> {{ measurement.bod }} mg/L</div>
+                            </td>
+                            <td>
+                                <div class="mb-2">
+                                    <span class="badge bg-{% if measurement.mamdani_category == 'Excellent' %}success
+                                                      {% elif measurement.mamdani_category == 'Good' %}primary
+                                                      {% elif measurement.mamdani_category == 'Fair' %}warning
+                                                      {% else %}danger{% endif %}">
+                                        Mamdani: {{ measurement.mamdani_wqi|floatformat:2 }} ({{ measurement.mamdani_category }})
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="badge bg-{% if measurement.sugeno_category == 'Excellent' %}success
+                                                      {% elif measurement.sugeno_category == 'Good' %}primary
+                                                      {% elif measurement.sugeno_category == 'Fair' %}warning
+                                                      {% else %}danger{% endif %}">
+                                        Sugeno: {{ measurement.sugeno_wqi|floatformat:2 }} ({{ measurement.sugeno_category }})
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-{% if measurement.storet_class == 'Excellent' %}success
+                                                  {% elif measurement.storet_class == 'Good' %}primary
+                                                  {% elif measurement.storet_class == 'Fair' %}warning
+                                                  {% else %}danger{% endif %}">
+                                    {{ measurement.storet_wqi|floatformat:2 }} ({{ measurement.storet_class }})
+                                </span>
+                                <div class="mt-1">
+                                    <small>Score: {{ measurement.storet_score }}</small>
+                                </div>
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'measurement_detail' measurement.id %}" class="btn btn-sm btn-primary">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="{% url 'edit_measurement' measurement.id %}" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{% url 'delete_measurement' measurement.id %}" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> No water quality measurements found for this location.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load wqi_filters %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Detail Pengukuran Kualitas Air</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Informasi Dasar -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-map-marker-alt"></i> Lokasi</h5>
+                            <p>{{ measurement.location.name }}</p>
+                            
+                            <h5><i class="fas fa-user"></i> Penginput</h5>
+                            <p>{{ measurement.user.get_full_name|default:measurement.user.username }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-calendar-alt"></i> Tanggal</h5>
+                            <p>{{ measurement.date|date:"d F Y H:i" }}</p>
+                        </div>
+                    </div>
+
+                    <!-- Parameter Kualitas Air -->
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Parameter Kualitas Air</h5>
+                                </div>
+                                <div class="card-body">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <th>pH</th>
+                                                <td>{{ measurement.ph }}</td>
+                                                <td>{{ measurement.ph|get_ph_status }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>DO (mg/L)</th>
+                                                <td>{{ measurement.do }}</td>
+                                                <td>{{ measurement.do|get_do_status }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>BOD (mg/L)</th>
+                                                <td>{{ measurement.bod }}</td>
+                                                <td>{{ measurement.bod|get_bod_status }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>COD (mg/L)</th>
+                                                <td>{{ measurement.cod }}</td>
+                                                <td>{{ measurement.cod|get_cod_status }}</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Total Coliform</th>
+                                                <td>{{ measurement.total_coliform }}</td>
+                                                <td>{{ measurement.total_coliform|get_tc_status }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hasil Analisis -->
+                        <div class="col-md-6 mb-4">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h5 class="mb-0">Hasil Analisis</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <!-- STORET -->
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card h-100">
+                                                <div class="card-body text-center">
+                                                    <h6>STORET</h6>
+                                                    <h3>{{ measurement.storet_wqi|default:"-"|floatformat:2 }}</h3>
+                                                    {% if measurement.storet_category %}
+                                                    <span class="badge bg-{{ measurement.storet_category|get_category_color }}">
+                                                        {{ measurement.storet_category|title }}
+                                                    </span>
+                                                    {% else %}
+                                                    <span class="badge bg-secondary">Tidak tersedia</span>
+                                                    {% endif %}
+                                                    <p class="mt-2 small">
+                                                        {% if measurement.storet_score %}
+                                                        <strong>Skor:</strong> {{ measurement.storet_score }}<br>
+                                                        {% endif %}
+                                                        {% if measurement.storet_class %}
+                                                        {{ measurement.storet_class }}
+                                                        {% endif %}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Mamdani -->
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card h-100">
+                                                <div class="card-body text-center">
+                                                    <h6>Mamdani</h6>
+                                                    <h3>{{ measurement.mamdani_wqi|default:"-"|floatformat:2 }}</h3>
+                                                    {% if measurement.mamdani_category %}
+                                                    <span class="badge bg-{{ measurement.mamdani_category|get_category_color }}">
+                                                        {{ measurement.mamdani_category|title }}
+                                                    </span>
+                                                    {% else %}
+                                                    <span class="badge bg-secondary">Tidak tersedia</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Sugeno -->
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card h-100">
+                                                <div class="card-body text-center">
+                                                    <h6>Sugeno</h6>
+                                                    <h3>{{ measurement.sugeno_wqi|default:"-"|floatformat:2 }}</h3>
+                                                    {% if measurement.sugeno_category %}
+                                                    <span class="badge bg-{{ measurement.sugeno_category|get_category_color }}">
+                                                        {{ measurement.sugeno_category|title }}
+                                                    </span>
+                                                    {% else %}
+                                                    <span class="badge bg-secondary">Tidak tersedia</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Kembali
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

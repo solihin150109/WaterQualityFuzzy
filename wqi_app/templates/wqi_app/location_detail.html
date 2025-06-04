@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3>{{ location.name }}</h3>
+                <a href="{% url 'map_view' %}" class="btn btn-light btn-sm">
+                    <i class="fas fa-arrow-left"></i> Back to Map
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Location Information</h5>
+                    <p><strong>Coordinates:</strong><br>
+                    Latitude: {{ location.latitude }}<br>
+                    Longitude: {{ location.longitude }}</p>
+                    <p><strong>Description:</strong><br>
+                    {{ location.description|default:"No description available" }}</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Water Quality Measurements</h5>
+                    {% if measurements %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Mamdani</th>
+                                        <th>Sugeno</th>
+                                        <th>STORET</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for measurement in measurements %}
+                                    <tr>
+                                        <td>{{ measurement.date|date:"Y-m-d" }}</td>
+                                        <td>{{ measurement.mamdani_category }}</td>
+                                        <td>{{ measurement.sugeno_category }}</td>
+                                        <td>{{ measurement.storet_category }}</td>
+                                        <td>
+                                            <a href="{% url 'measurement_detail' measurement.id %}" 
+                                               class="btn btn-sm btn-primary">
+                                                Details
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            No measurements recorded for this location.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

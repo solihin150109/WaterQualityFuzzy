@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div id="map-container" class="position-relative w-100" style="height: calc(100vh - 70px);">
+        <div id="map" class="position-absolute top-0 bottom-0 start-0 end-0">
+            {{ map|safe }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Event untuk klik tombol detail
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('detail-btn')) {
+            const locationId = e.target.dataset.id;
+            window.location.href = `/locations/${locationId}/`;
+        }
+    });
+
+    // Cek apakah objek peta ada dan paksa ukuran diperbarui
+    if (typeof window.myMap !== 'undefined' && window.myMap.invalidateSize) {
+        window.myMap.invalidateSize();
+    }
+
+    // Saat window resize, update ukuran map
+    window.addEventListener('resize', function() {
+        if (typeof window.myMap !== 'undefined' && window.myMap.invalidateSize) {
+            setTimeout(() => {
+                window.myMap.invalidateSize();
+            }, 200);  // kasih delay kecil supaya lebih smooth
+        }
+    });
+});
+</script>
+{% endblock %}
