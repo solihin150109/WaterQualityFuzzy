@@ -1,4 +1,5 @@
 aiohappyeyeballs==2.6.1
+dj-database-url
 aiohttp==3.11.14
 aiohttp-retry==2.9.1
 aiosignal==1.3.2
