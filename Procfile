@@ -1,1 +1,1 @@
-web: gunicorn WaterQualityFuzzy.wsgi
+web: gunicorn wqi_app.wsgi
